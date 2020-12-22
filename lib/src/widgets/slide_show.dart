@@ -101,6 +101,7 @@ class __SlideShowState extends State<_SlideShow> {
   Widget build(BuildContext context) {
     return Container(
       child: PageView(
+        physics: BouncingScrollPhysics(),
         controller: pageViewController,
         children: widget.children.map((child) => _Slide(child)).toList(),
       ),
@@ -148,20 +149,21 @@ class _Dot extends StatelessWidget {
   Widget build(BuildContext context) {
     final sliderModel = Provider.of<SliderModel>(context);
     final pageIndex = sliderModel.getCurrentPage;
-    final radius =
-        (pageIndex >= this.index - 0.5 && pageIndex < this.index + 0.5)
-            ? sliderModel.getPrimaryDotRadius
-            : sliderModel.getSecondaryDotRadius;
+    double radius;
+    Color color;
+    if (pageIndex >= this.index - 0.5 && pageIndex < this.index + 0.5) {
+      radius = sliderModel.getPrimaryDotRadius;
+      color = sliderModel.getPrimaryColor;
+    } else {
+      radius = sliderModel.getSecondaryDotRadius;
+      color = sliderModel.getSecondaryColor;
+    }
     return AnimatedContainer(
       width: radius,
       height: radius,
       duration: Duration(milliseconds: 500),
       margin: EdgeInsets.symmetric(horizontal: 7.0),
-      decoration: BoxDecoration(
-          color: (pageIndex >= this.index - 0.5 && pageIndex < this.index + 0.5)
-              ? sliderModel.getPrimaryColor
-              : sliderModel.getSecondaryColor,
-          shape: BoxShape.circle),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
